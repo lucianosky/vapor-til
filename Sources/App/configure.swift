@@ -16,16 +16,6 @@ public func configure(
     middlewares.use(ErrorMiddleware.self)
     services.register(middlewares)
     
-//    var databases = DatabasesConfig()
-//    let databaseConfig = PostgreSQLDatabaseConfig(
-//        hostname: "localhost",
-//        username: "vapor",
-//        database: "vapor",
-//        password: "password")
-//    let database = PostgreSQLDatabase(config: databaseConfig)
-//    databases.add(database: database, as: .psql)
-//    services.register(databases)
-
     var databases = DatabasesConfig()
     let hostname = Environment.get("DATABASE_HOSTNAME") ?? "localhost"
     let username = Environment.get("DATABASE_USER") ?? "vapor"
@@ -41,6 +31,11 @@ public func configure(
     services.register(databases)
     
     var migrations = MigrationConfig()
+    migrations.add(model: User.self, database: .psql)
     migrations.add(model: Acronym.self, database: .psql)
     services.register(migrations)
+    
+    var commandConfig = CommandConfig.default()
+    commandConfig.useFluentCommands()
+    services.register(commandConfig)
 }
