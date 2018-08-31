@@ -1,5 +1,6 @@
 import Vapor
-import FluentPostgreSQL
+// TODO import FluentPostgreSQL
+import FluentSQLite
 
 final class Acronym: Codable {
     var id: Int?
@@ -25,10 +26,12 @@ extension Acronym {
     }
 }
 
-extension Acronym: PostgreSQLModel {}
+// TODO extension Acronym: PostgreSQLModel {}
+extension Acronym: SQLiteModel {}
 
 extension Acronym: Migration {
-    static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
+    // TODO static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
+    static func prepare(on connection: SQLiteConnection) -> Future<Void> {
         return Database.create(self, on: connection) { builder in
             try addProperties(to: builder)
             builder.reference(from: \.userID, to: \User.id)
