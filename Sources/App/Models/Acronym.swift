@@ -1,5 +1,4 @@
 import Vapor
-// TODO import FluentPostgreSQL
 import FluentSQLite
 
 final class Acronym: Codable {
@@ -26,11 +25,9 @@ extension Acronym {
     }
 }
 
-// TODO extension Acronym: PostgreSQLModel {}
 extension Acronym: SQLiteModel {}
 
 extension Acronym: Migration {
-    // TODO static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
     static func prepare(on connection: SQLiteConnection) -> Future<Void> {
         return Database.create(self, on: connection) { builder in
             try addProperties(to: builder)

@@ -1,4 +1,3 @@
-// TODO import FluentPostgreSQL
 import FluentSQLite
 import Vapor
 
@@ -8,7 +7,6 @@ public func configure(
     _ services: inout Services
     ) throws {
     
-    // TODO try services.register(FluentPostgreSQLProvider())
     try services.register(FluentSQLiteProvider())
     let router = EngineRouter.default()
     try routes(router)
@@ -17,6 +15,8 @@ public func configure(
     var middlewares = MiddlewareConfig()
     middlewares.use(ErrorMiddleware.self)
     services.register(middlewares)
+    
+    // TODO review & delete later
     
 //    var databases = DatabasesConfig()
 //    let hostname = Environment.get("DATABASE_HOSTNAME") ?? "localhost"
@@ -46,10 +46,10 @@ public func configure(
 //        password: password)
 //
 //
-//    // TODO let database = PostgreSQLDatabase(config: databaseConfig)
-//    // TODO ------>>>>> let database = SQLiteDatabase(storage: .file(path: "db.sqlite")
+//    // let database = PostgreSQLDatabase(config: databaseConfig)
+//    //  ------>>>>> let database = SQLiteDatabase(storage: .file(path: "db.sqlite")
 //    let database = SQLiteDatabase(storage: .memory)
-//    // TODO databases.add(database: database, as: .psql)
+//    // databases.add(database: database, as: .psql)
 //    databases.add(database: database, as: .sqlite)
 //    services.register(databases)
     
@@ -59,7 +59,6 @@ public func configure(
     services.register(databases)
     
     var migrations = MigrationConfig()
-    // TODO .psql 4x abaixo
     migrations.add(model: User.self, database: .sqlite)
     migrations.add(model: Acronym.self, database: .sqlite)
     migrations.add(model: Category.self, database: .sqlite)

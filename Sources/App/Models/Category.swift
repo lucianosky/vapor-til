@@ -1,5 +1,4 @@
 import Vapor
-// TODO import FluentPostgreSQL
 import FluentSQLite
 
 final class Category: Codable {
@@ -17,7 +16,6 @@ extension Category {
     }
 }
 
-// TODO extension Category: PostgreSQLModel {}
 extension Category: SQLiteModel {}
 extension Category: Content {}
 extension Category: Migration {}

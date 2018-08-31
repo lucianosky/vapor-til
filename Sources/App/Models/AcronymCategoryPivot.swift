@@ -1,8 +1,6 @@
-// TODO import FluentPostgreSQL
 import FluentSQLite
 import Foundation
 
-// TODO final class AcronymCategoryPivot: PostgreSQLUUIDPivot, ModifiablePivot {
 final class AcronymCategoryPivot: SQLiteUUIDPivot, ModifiablePivot {
 
     var id: UUID?
@@ -24,7 +22,6 @@ final class AcronymCategoryPivot: SQLiteUUIDPivot, ModifiablePivot {
 
 extension AcronymCategoryPivot: Migration {
 
-    // TODO static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
     static func prepare(on connection: SQLiteConnection) -> Future<Void> {
         return Database.create(self, on: connection) { builder in
             try addProperties(to: builder)
