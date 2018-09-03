@@ -1,5 +1,6 @@
 import FluentSQLite
 import Vapor
+import Leaf
 
 public func configure(
     _ config: inout Config,
@@ -8,6 +9,9 @@ public func configure(
     ) throws {
     
     try services.register(FluentSQLiteProvider())
+    
+    try services.register(LeafProvider())
+    
     let router = EngineRouter.default()
     try routes(router)
     services.register(router, as: Router.self)
@@ -16,7 +20,7 @@ public func configure(
     middlewares.use(ErrorMiddleware.self)
     services.register(middlewares)
     
-    // TODO review & delete later
+    // TODO: commented code for PostgreSQL
     
 //    var databases = DatabasesConfig()
 //    let hostname = Environment.get("DATABASE_HOSTNAME") ?? "localhost"
@@ -68,4 +72,6 @@ public func configure(
     var commandConfig = CommandConfig.default()
     commandConfig.useFluentCommands()
     services.register(commandConfig)
+    
+    config.prefer(LeafRenderer.self, for: ViewRenderer.self)
 }
