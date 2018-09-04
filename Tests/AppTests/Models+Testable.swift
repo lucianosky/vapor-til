@@ -1,17 +1,27 @@
 @testable import App
-import FluentPostgreSQL
+import FluentSQLite
+import Crypto
 
 extension User {
     
     static func create(
         name: String = "Luke",
-        username: String = "lukes",
-        on connection: PostgreSQLConnection
-        ) throws -> User {
-        let user = User(name: name, username: username)
+        username: String? = nil,
+        on connection: SQLiteConnection) throws -> User {
+        var createUsername: String
+        if let suppliedUsername = username {
+            createUsername = suppliedUsername
+        } else {
+            createUsername = UUID().uuidString
+        }
+        let password = try BCrypt.hash("password")
+        let user = User(
+            name: name,
+            username: createUsername,
+            password: password)
         return try user.save(on: connection).wait()
     }
-    
+
 }
 
 extension Acronym {
@@ -20,7 +30,7 @@ extension Acronym {
         short: String = "TIL",
         long: String = "Today I Learned",
         user: User? = nil,
-        on connection: PostgreSQLConnection
+        on connection: SQLiteConnection
         ) throws -> Acronym {
         var acronymsUser = user
         if acronymsUser == nil {
@@ -37,7 +47,7 @@ extension Acronym {
 
 extension App.Category {
  
-    static func create(name: String = "Random", on connection: PostgreSQLConnection) throws -> App.Category {
+    static func create(name: String = "Random", on connection: SQLiteConnection) throws -> App.Category {
         let category = Category(name: name)
         return try category.save(on: connection).wait()
     }

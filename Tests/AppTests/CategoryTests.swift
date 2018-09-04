@@ -29,19 +29,19 @@
  @testable import App
  import Vapor
  import XCTest
- import FluentPostgreSQL
+ import FluentSQLite
 
  final class CategoryTests: XCTestCase {
 
    let categoriesURI = "/api/categories/"
    let categoryName = "Teenager"
    var app: Application!
-   var conn: PostgreSQLConnection!
+   var conn: SQLiteConnection!
 
    override func setUp() {
      try! Application.reset()
      app = try! Application.testable()
-     conn = try! app.newConnection(to: .psql).wait()
+     conn = try! app.newConnection(to: .sqlite).wait()
    }
 
    override func tearDown() {
@@ -60,8 +60,14 @@
    }
 
    func testCategoryCanBeSavedWithAPI() throws {
-     let category = Category(name: categoryName)
-     let receivedCategory = try app.getResponse(to: categoriesURI, method: .POST, headers: ["Content-Type": "application/json"], data: category, decodeTo: Category.self)
+    let category = Category(name: categoryName)
+    let receivedCategory = try app.getResponse(
+        to: categoriesURI,
+        method: .POST,
+        headers: ["Content-Type": "application/json"],
+        data: category,
+        decodeTo: Category.self,
+        loggedInRequest: true)
 
      XCTAssertEqual(receivedCategory.name, categoryName)
      XCTAssertNotNil(receivedCategory.id)
@@ -89,9 +95,11 @@
 
      let category = try Category.create(name: categoryName, on: conn)
 
-     _ = try app.sendRequest(to: "/api/acronyms/\(acronym.id!)/categories/\(category.id!)", method: .POST)
-     _ = try app.sendRequest(to: "/api/acronyms/\(acronym2.id!)/categories/\(category.id!)", method: .POST)
-
+    let acronym1URL = "/api/acronyms/\(acronym.id!)/categories/\(category.id!)"
+    _ = try app.sendRequest(to: acronym1URL, method: .POST, loggedInRequest: true)
+    let acronym2URL = "/api/acronyms/\(acronym2.id!)/categories/\(category.id!)"
+    _ = try app.sendRequest(to: acronym2URL, method: .POST, loggedInRequest: true)
+    
      let acronyms = try app.getResponse(to: "\(categoriesURI)\(category.id!)/acronyms", decodeTo: [Acronym].self)
 
      XCTAssertEqual(acronyms.count, 2)
