@@ -1,6 +1,7 @@
 import FluentSQLite
 import Vapor
 import Leaf
+import Authentication
 
 public func configure(
     _ config: inout Config,
@@ -11,6 +12,7 @@ public func configure(
     try services.register(FluentSQLiteProvider())
     
     try services.register(LeafProvider())
+    try services.register(AuthenticationProvider())
     
     let router = EngineRouter.default()
     try routes(router)
@@ -68,6 +70,8 @@ public func configure(
     migrations.add(model: Acronym.self, database: .sqlite)
     migrations.add(model: Category.self, database: .sqlite)
     migrations.add(model: AcronymCategoryPivot.self, database: .sqlite)
+    migrations.add(model: Token.self, database: .sqlite)
+    migrations.add(migration: AdminUser.self, database: .sqlite)
     services.register(migrations)
     
     var commandConfig = CommandConfig.default()
