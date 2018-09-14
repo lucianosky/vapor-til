@@ -72,9 +72,17 @@ public func configure(
     migrations.add(model: Category.self, database: .sqlite)
     migrations.add(model: AcronymCategoryPivot.self, database: .sqlite)
     migrations.add(model: Token.self, database: .sqlite)
-    migrations.add(migration: AdminUser.self, database: .sqlite)
+    switch env {
+    case .development, .testing:
+        migrations.add(migration: AdminUser.self, database: .sqlite)
+    default:
+        break
+    }
+    migrations.add(migration: AddTwitterURLToUser.self, database: .sqlite)
+    // GOT a error on SQLite: "SQLite only supports adding one (1) column in an ALTER query."
+    // migrations.add(migration: MakeCategoriesUnique.self, database: .sqlite)
     services.register(migrations)
-    
+
     var commandConfig = CommandConfig.default()
     commandConfig.useFluentCommands()
     services.register(commandConfig)
